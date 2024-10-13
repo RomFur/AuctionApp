@@ -1,6 +1,15 @@
-﻿namespace AuctionApp.Core.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using AuctionApp.Core;
 
-public interface IAuctionPersistence
+namespace ProjectApp.Core.Interfaces
 {
-    
+    public interface IAuctionPersistence
+    {
+        List<Auction> GetAllActiveAuctions();
+        Auction GetById(int id);
+        void AddAuction(Auction auction);
+        void UpdateAuction(Auction auction);
+        void DeleteAuction(int id);
+    }
 }

@@ -1,6 +1,13 @@
-﻿namespace AuctionApp.Core.Interfaces;
+﻿using AuctionApp.Core;
 
-public interface IAuctionService
+namespace ProjectApp.Core.Interfaces
 {
-    //Kan behöva för BidService maybe...
+    //Kan behöva Bidservice och IBidService...
+    public interface IAuctionService
+    {
+        List<Auction> GetAllActiveAuctions();
+        Auction GetById(int id);
+        void CreateAuction(string itemName, string description, decimal startingPrice, DateTime endDate, string userName);
+        void CloseAuction(int auctionId);
+    }
 }
