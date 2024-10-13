@@ -14,7 +14,7 @@
         private List<Bid> _bids = new List<Bid>();  
         public IEnumerable<Bid> Bids => _bids.AsReadOnly();  // Read-Only
 
-        public bool IsActive => EndDate == null;  
+        public bool IsActive => DateTime.Now <= EndDate;
         
         public Auction(string itemName, string description, decimal startingPrice, DateTime endDate, string auctioneerId)
         {

@@ -1,7 +1,10 @@
 using AuctionApp.Areas.Identity.Data;
+using AuctionApp.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AuctionApp.Data;
+using ProjectApp.Core.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //identity
@@ -13,6 +16,8 @@ builder.Services.AddDefaultIdentity<AppIdentityUser>(
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IAuctionService, MockAuctionService>();
 
 var app = builder.Build();
 
