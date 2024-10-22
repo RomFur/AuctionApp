@@ -6,8 +6,8 @@
 
         public string ItemName { get; set; }  
         public string Description { get; set; }  
-        public decimal StartingPrice { get; set; }  
-        public string AuctioneerId { get; set; }  // User who is auctioning the item.
+        public double StartingPrice { get; set; }  
+        public string UserName { get; set; }  // User who is auctioning the item.
         public DateTime StartDate { get; set; }  //behövs?
         public DateTime? EndDate { get; private set; }  
 
@@ -16,17 +16,17 @@
 
         public bool IsActive => DateTime.Now <= EndDate;
         
-        public Auction(string itemName, string description, decimal startingPrice, DateTime endDate, string auctioneerId)
+        public Auction(string itemName, string description, double startingPrice, DateTime endDate, string userName)
         {
             ItemName = itemName;
             Description = description;
             StartingPrice = startingPrice;
             StartDate = DateTime.Now;
             EndDate = endDate;
-            AuctioneerId = auctioneerId;
+            UserName = userName;
         }
 
-        public Auction(int id, string itemName, string description, decimal startingPrice, DateTime startDate, DateTime? endDate = null, string auctioneerId = null)
+        public Auction(int id, string itemName, string description, double startingPrice, DateTime startDate, DateTime? endDate, string userName)
         {
             Id = id;
             ItemName = itemName;
@@ -34,7 +34,7 @@
             StartingPrice = startingPrice;
             StartDate = startDate;
             EndDate = endDate;
-            AuctioneerId = auctioneerId;
+            UserName = userName;
         }
 
         public Auction() { }

@@ -7,8 +7,9 @@ namespace ProjectApp.Core.Interfaces
     public interface IAuctionPersistence
     {
         List<Auction> GetAllActiveAuctions();
-        Auction GetById(int id);
-        void AddAuction(Auction auction);
+        List<Auction> GetAllByUserName(string userName);
+        Auction GetById(int id, string username);
+        void SaveAuction(Auction auction);
         void UpdateAuction(Auction auction);
         void DeleteAuction(int id);
     }

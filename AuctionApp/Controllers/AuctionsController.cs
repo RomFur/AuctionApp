@@ -17,7 +17,7 @@ namespace AuctionApp.Controllers
         // GET: AuctionsController
         public ActionResult Index()
         {
-            List<Auction> auctions = _auctionService.GetById(1);  // Get all active auctions
+            List<Auction> auctions = _auctionService.GetByAllByUserName("rlfurman@kth.se");  // Get all active auctions
             List<AuctionVm> auctionsVms = new List<AuctionVm>();
             foreach (var auction in auctions)
             {

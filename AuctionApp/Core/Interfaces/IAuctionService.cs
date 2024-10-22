@@ -7,6 +7,7 @@ namespace ProjectApp.Core.Interfaces
     {
         List<Auction> GetAllActiveAuctions();
         List<Auction> GetById(int id);
+        List<Auction> GetByAllByUserName(string userName);
         void CreateAuction(string itemName, string description, decimal startingPrice, DateTime endDate, string userName);
         void CloseAuction(int auctionId);
     }
