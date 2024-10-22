@@ -15,6 +15,11 @@ public class MockAuctionService : IAuctionService
         return _auctions.FindAll(a => a.Id == id);
     }
 
+    public Auction GetById(int id, string userName)
+    {
+        throw new NotImplementedException();
+    }
+
     public Auction GetAuctionById(int id, string userId)
     {
         return _auctions.Find(a => a.Id == id && a.UserName == userId);
@@ -30,7 +35,7 @@ public class MockAuctionService : IAuctionService
         throw new NotImplementedException();
     }
 
-    public List<Auction> GetByAllByUserName(string userName)
+    public List<Auction> GetAllByUserName(string userName)
     {
         throw new NotImplementedException();
     }

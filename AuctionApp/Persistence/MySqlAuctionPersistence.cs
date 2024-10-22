@@ -1,5 +1,7 @@
-﻿using AuctionApp.Core;
+﻿using System.Data;
+using AuctionApp.Core;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using ProjectApp.Core.Interfaces;
 
@@ -33,7 +35,20 @@ public class MySqlAuctionPersistence : IAuctionPersistence
 
     public Auction GetById(int id, string username)
     {
-        throw new NotImplementedException();
+        AuctionDb auctionDb = _dbContext.AuctionDbs
+            .Where(a => a.Id == id && a.UserName.Equals(username))
+            .Include(a => a.BidDbs)
+            .FirstOrDefault(); // null if not found!
+        
+        if (auctionDb == null) throw new DataException("Auction not found");
+        
+        Auction auction = _mapper.Map<Auction>(auctionDb);
+        foreach (BidDb bidDb in auctionDb.BidDbs)
+        {
+            Bid bid = _mapper.Map<Bid>(bidDb);
+            auction.PlaceBid(bid);
+        }
+        return auction;
     }
 
     public List<Auction> GetAllActiveAuctions()

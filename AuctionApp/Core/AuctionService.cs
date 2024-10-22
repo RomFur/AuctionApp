@@ -1,4 +1,5 @@
-﻿using ProjectApp.Core.Interfaces;
+﻿using System.Data;
+using ProjectApp.Core.Interfaces;
 
 namespace AuctionApp.Core;
 
@@ -12,9 +13,11 @@ public class AuctionService : IAuctionService
     }
 
     
-    public List<Auction> GetById(int id)
+    public Auction GetById(int id, string userName)
     {
-        throw new NotImplementedException();
+        Auction auction = _auctionPersistence.GetById(id, userName);
+        if (auction == null) throw new DataException("Auction not found");
+        return auction;
     }
 
     public List<Auction> GetAllActiveAuctions()
@@ -37,7 +40,7 @@ public class AuctionService : IAuctionService
         throw new NotImplementedException();
     }
 
-    public List<Auction> GetByAllByUserName(string userName)
+    public List<Auction> GetAllByUserName(string userName)
     {
         List<Auction> auctions = _auctionPersistence.GetAllByUserName(userName);
         return auctions;
