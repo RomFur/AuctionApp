@@ -1,11 +1,13 @@
 using System.Data;
 using AuctionApp.Core;
 using AuctionApp.Models.Auctions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectApp.Core.Interfaces;
 
 namespace AuctionApp.Controllers
 {
+    [Authorize]
     public class AuctionsController : Controller
     {
         private IAuctionService _auctionService;
@@ -18,7 +20,7 @@ namespace AuctionApp.Controllers
         // GET: AuctionsController
         public ActionResult Index()
         {
-            List<Auction> auctions = _auctionService.GetAllByUserName("rlfurman@kth.se");  // Get all active auctions
+            List<Auction> auctions = _auctionService.GetAllByUserName(User.Identity.Name);  // Get all active auctions
             List<AuctionVm> auctionsVms = new List<AuctionVm>();
             foreach (var auction in auctions)
             {
@@ -31,7 +33,7 @@ namespace AuctionApp.Controllers
         public ActionResult Details(int id)
         {
             
-                Auction auction = _auctionService.GetById(id, "rlfurman@kth.se"); // current user
+                Auction auction = _auctionService.GetById(id, User.Identity.Name); // current user
                 if (auction == null) return BadRequest("Might be null"); // HTTP 400
 
                 AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction);
