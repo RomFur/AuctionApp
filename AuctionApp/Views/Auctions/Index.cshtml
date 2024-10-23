@@ -11,49 +11,49 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ItemName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ItemDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuctioneerId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Name  <!-- Custom display name -->
+        </th>
+        <th>
+            Description  <!-- Custom display name -->
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate) <!-- Keep default for EndDate -->
+        </th>
+        <th>
+            Auctioneer  <!-- Custom display name -->
+        </th>
+        <th>
+            Active  <!-- Custom display name -->
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemName)
+                @Html.DisplayFor(modelItem => item.ItemName)  <!-- Data for Name -->
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemDescription)
+                @Html.DisplayFor(modelItem => item.ItemDescription)  <!-- Data for Description -->
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
+                @item.EndDate.ToString("yyyy-MM-dd HH:mm")  <!-- Formatted EndDate -->
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AuctioneerId)
+                @Html.DisplayFor(modelItem => item.AuctioneerId)  <!-- Data for Auctioneer -->
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
+                @Html.DisplayFor(modelItem => item.IsActive)  <!-- Data for Active -->
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
                 @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", "Delete", new {  id=item.Id })
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

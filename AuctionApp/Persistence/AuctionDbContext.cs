@@ -30,6 +30,7 @@ public class AuctionDbContext : DbContext
             Id = -1,
             Amount = 2.50,
             BidderId = "rlfurman@hotmail.com",
+            DateCreated = DateTime.Now,
             AuctionId = -1,
         };
         BidDb bdb2 = new BidDb()
@@ -37,6 +38,7 @@ public class AuctionDbContext : DbContext
             Id = -2,
             Amount = 1.28,
             BidderId = "rlfurman@hotmail.com",
+            DateCreated = DateTime.Now,
             AuctionId = -1,
         };
         modelBuilder.Entity<BidDb>().HasData(bdb1);

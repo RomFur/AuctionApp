@@ -15,6 +15,9 @@ public class BidDb
     [Required]
     public double Amount { get; set; }
     
+    [Required]
+    public DateTime DateCreated { get; set; }
+    
     [ForeignKey("AuctionId")]
     public AuctionDb AuctionDb { get; set; }
     

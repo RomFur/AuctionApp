@@ -35,9 +35,17 @@ public class AuctionService : IAuctionService
         throw new NotImplementedException();
     }
 
-    public void CreateAuction(string itemName, string description, decimal startingPrice, DateTime endDate, string userName)
+    public void CreateAuction(string itemName, string description, double startingPrice, DateTime endDate, string userName)
     {
-        throw new NotImplementedException();
+        if (itemName == null) throw new DataException("Item name");
+        if (itemName.Length > 128) throw new DataException("Item name too long");
+        if (description == null || description.Length > 512) throw new DataException("Description");
+        if (startingPrice < 1) throw new DataException("Starting price is missing, or has to be greater than 0");
+        if (endDate < DateTime.Now || endDate == null) throw new DataException("Ending date invalid");
+        if (userName == null) throw new DataException("User name missing");
+        
+        Auction auction = new Auction(itemName, description, startingPrice, endDate, userName);
+        _auctionPersistence.SaveAuction(auction);
     }
 
     public List<Auction> GetAllByUserName(string userName)
