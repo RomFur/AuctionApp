@@ -74,6 +74,66 @@ namespace AuctionApp.Controllers
             }
         }
         
+        
+        // GET : AuctionsController/EditAuction/{id}
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            // Fetch the auction by ID and check if it belongs to the current user
+            Auction auction = _auctionService.GetById(id, User.Identity.Name);
+
+            if (auction == null)
+            {
+                return NotFound();  // Return 404 if the auction is not found or doesn't belong to the user
+            }
+
+            // Create the EditAuctionVm model and populate it with the current description
+            var model = new EditAuctionVm
+            {
+                Description = auction.Description // Pre-fill the current description
+            };
+
+            return View(model); // Pass the model to the view
+        }
+
+        
+        // POST : AuctionsController/EditAuction/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, EditAuctionVm editAuctionVm)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Fetch the auction by ID to ensure it exists and belongs to the user
+                    Auction auction = _auctionService.GetById(id, User.Identity.Name);
+
+                    if (auction == null)
+                    {
+                        return NotFound(); // Return 404 if the auction is not found or doesn't belong to the user
+                    }
+
+                    // Update only the description of the auction
+                    auction.Description = editAuctionVm.Description;
+
+                    // Save the changes through the service layer
+                    _auctionService.UpdateAuction(auction);
+
+                    // Redirect to the auction details page after successful update
+                    return RedirectToAction("Details", new { id = auction.Id });
+                }
+                catch (DataException)
+                {
+                    // Handle any data-related exceptions
+                    ModelState.AddModelError("", "Unable to save changes. Try again later.");
+                }
+            }
+
+            // If the model state is invalid, re-display the form with the current values
+            return View(editAuctionVm);
+        }
+
         // Other actions...
     }
 

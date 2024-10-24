@@ -48,6 +48,21 @@ public class AuctionService : IAuctionService
         _auctionPersistence.SaveAuction(auction);
     }
 
+    public void UpdateAuction(Auction auction)
+    {
+        if (auction == null) throw new DataException("Auction cannot be null");
+    
+        // Validate the auction's description (assuming you're allowing editing of only the description)
+        if (auction.Description == null || auction.Description.Length > 512)
+            throw new DataException("Invalid description. It cannot be null or exceed 512 characters");
+
+        // Optional: You could validate other fields depending on which ones are being updated
+        // e.g., if you're updating the end date or other properties, add validation here.
+
+        // After validation, update the auction in the persistence layer
+        _auctionPersistence.UpdateAuction(auction);  // Assuming this is a method in your persistence layer
+    }
+
     public List<Auction> GetAllByUserName(string userName)
     {
         List<Auction> auctions = _auctionPersistence.GetAllByUserName(userName);

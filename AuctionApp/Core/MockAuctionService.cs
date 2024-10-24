@@ -35,6 +35,11 @@ public class MockAuctionService : IAuctionService
         throw new NotImplementedException();
     }
 
+    public void UpdateAuction(Auction auction)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Auction> GetAllByUserName(string userName)
     {
         throw new NotImplementedException();

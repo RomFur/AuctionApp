@@ -32,7 +32,22 @@ public class MySqlAuctionPersistence : IAuctionPersistence
 
     public void UpdateAuction(Auction auction)
     {
-        throw new NotImplementedException();
+        // Retrieve the auction entity from the database
+        AuctionDb auctionDb = _dbContext.AuctionDbs
+            .FirstOrDefault(a => a.Id == auction.Id && a.UserName == auction.UserName);
+    
+        // Check if auction exists
+        if (auctionDb == null)
+        {
+            throw new DataException("Auction not found.");
+        }
+    
+        // Update the description (assuming only description is allowed to be updated)
+        auctionDb.Description = auction.Description;
+
+        // Save changes back to the database
+        _dbContext.AuctionDbs.Update(auctionDb);
+        _dbContext.SaveChanges();
     }
 
     public Auction GetById(int id, string username)
