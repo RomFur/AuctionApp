@@ -68,6 +68,24 @@ public class MySqlAuctionPersistence : IAuctionPersistence
         return auction;
     }
 
+    public Auction GetById(int id)
+    {
+        AuctionDb auctionDb = _dbContext.AuctionDbs
+            .Where(a => a.Id == id)
+            .Include(a => a.BidDbs)
+            .FirstOrDefault(); // null if not found!
+        
+        if (auctionDb == null) throw new DataException("Auction not found");
+        
+        Auction auction = _mapper.Map<Auction>(auctionDb);
+        foreach (BidDb bidDb in auctionDb.BidDbs)
+        {
+            Bid bid = _mapper.Map<Bid>(bidDb);
+            auction.PlaceBid(bid);
+        }
+        return auction;
+    }
+
     public List<Auction> GetAllActiveAuctions()
     {
         // Fetch auctions with EndDate in the future, sorted by EndDate

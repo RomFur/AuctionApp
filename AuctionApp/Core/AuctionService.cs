@@ -19,6 +19,12 @@ public class AuctionService : IAuctionService
         if (auction == null) throw new DataException("Auction not found");
         return auction;
     }
+    public Auction GetById(int id)
+    {
+        Auction auction = _auctionPersistence.GetById(id);
+        if (auction == null) throw new DataException("Auction not found");
+        return auction;
+    }
 
     public List<Auction> GetAllActiveAuctions()
     {

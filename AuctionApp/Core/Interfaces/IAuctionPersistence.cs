@@ -9,6 +9,7 @@ namespace ProjectApp.Core.Interfaces
         List<Auction> GetAllActiveAuctions();
         List<Auction> GetAllByUserName(string userName);
         Auction GetById(int id, string username);
+        Auction GetById(int id);
         void SaveAuction(Auction auction);
         void UpdateAuction(Auction auction);
         void DeleteAuction(int id);

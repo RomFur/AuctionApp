@@ -50,8 +50,8 @@ namespace AuctionApp.Controllers
         // GET : AuctionsController/Details
         public ActionResult Details(int id)
         {
-            
-                Auction auction = _auctionService.GetById(id, User.Identity.Name); // current user
+
+            Auction auction = _auctionService.GetById(id); // current user
                 if (auction == null) return BadRequest("Might be null"); // HTTP 400
 
                 AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction);
@@ -99,12 +99,12 @@ namespace AuctionApp.Controllers
         {
             // Fetch the auction by ID and check if it belongs to the current user
             Auction auction = _auctionService.GetById(id, User.Identity.Name);
-
+            
             if (auction == null)
             {
                 return NotFound();  // Return 404 if the auction is not found or doesn't belong to the user
             }
-
+            
             // Create the EditAuctionVm model and populate it with the current description
             var model = new EditAuctionVm
             {
