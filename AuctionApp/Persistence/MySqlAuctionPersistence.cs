@@ -70,7 +70,21 @@ public class MySqlAuctionPersistence : IAuctionPersistence
 
     public List<Auction> GetAllActiveAuctions()
     {
-        throw new NotImplementedException();
+        // Fetch auctions with EndDate in the future, sorted by EndDate
+        var activeAuctionDbs = _dbContext.AuctionDbs
+            .Where(a => a.EndDate > DateTime.Now)  // Filter for future auctions
+            .OrderBy(a => a.EndDate)               // Sort by EndDate
+            .ToList();
+    
+        // Map to domain model
+        List<Auction> activeAuctions = new List<Auction>();
+        foreach (var auctionDb in activeAuctionDbs)
+        {
+            var auction = _mapper.Map<Auction>(auctionDb);
+            activeAuctions.Add(auction);
+        }
+    
+        return activeAuctions;
     }
 
     public List<Auction> GetAllByUserName(string userName)

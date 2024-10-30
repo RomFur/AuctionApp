@@ -28,6 +28,24 @@ namespace AuctionApp.Controllers
             }
             return View(auctionsVms);  // Pass the list of AuctionVm to the view
         }
+        
+        // GET: AuctionsController/Active
+        public ActionResult Active()
+        {
+            // Get all active auctions from the auction service
+            List<Auction> activeAuctions = _auctionService.GetAllActiveAuctions();
+    
+            // Map the Auction domain models to AuctionVm view models
+            List<AuctionVm> activeAuctionVms = new List<AuctionVm>();
+            foreach (var auction in activeAuctions)
+            {
+                activeAuctionVms.Add(AuctionVm.FromAuction(auction));
+            }
+
+            // Pass the list of active AuctionVm to the view
+            return View(activeAuctionVms);
+        }
+
 
         // GET : AuctionsController/Details
         public ActionResult Details(int id)

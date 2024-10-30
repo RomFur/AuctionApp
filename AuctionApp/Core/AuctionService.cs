@@ -22,7 +22,8 @@ public class AuctionService : IAuctionService
 
     public List<Auction> GetAllActiveAuctions()
     {
-        throw new NotImplementedException();
+        List<Auction> auctions = _auctionPersistence.GetAllActiveAuctions();
+        return auctions;
     }
 
     public List<Auction> GetAllInactiveAuctions()
