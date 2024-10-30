@@ -43,7 +43,8 @@
         {
             if (!IsActive)
                 throw new InvalidOperationException("Auction is closed.");
-
+            if (newBid.BidderId.Equals(UserName))
+                throw new InvalidOperationException("Cannot place bid on your own auction.");
             if (_bids.Count > 0 && newBid.Amount <= _bids.Max(b => b.Amount))
                 throw new InvalidOperationException("Bid must be higher than the current highest bid.");
 

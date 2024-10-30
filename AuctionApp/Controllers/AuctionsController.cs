@@ -75,7 +75,7 @@ namespace AuctionApp.Controllers
         }
         
         
-        // GET : AuctionsController/EditAuction/{id}
+        // GET : AuctionsController/Edit/{id}
         [HttpGet]
         public ActionResult Edit(int id)
         {
