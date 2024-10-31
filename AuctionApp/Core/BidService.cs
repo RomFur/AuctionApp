@@ -1,6 +1,9 @@
-﻿namespace AuctionApp.Core;
+﻿using System.Data;
+using ProjectApp.Core.Interfaces;
 
-public class BidService
+namespace AuctionApp.Core
 {
-    
+    public class BidService
+    {
+    }
 }

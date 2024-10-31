@@ -5,6 +5,7 @@ namespace AuctionApp.Models.Auctions;
 
 public class BidVm
 {
+    
     [ScaffoldColumn(false)]
     public int Id { get; set; }
     
@@ -27,4 +28,5 @@ public class BidVm
             TimePlaced = bid.TimePlaced
         };
     }
+    
 }

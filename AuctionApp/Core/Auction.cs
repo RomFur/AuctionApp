@@ -78,6 +78,11 @@
             var highestBid = GetHighestBid();
             return $"{Id}: {ItemName} - Description: {Description} - Starting Price: {StartingPrice:C} - Highest bid: {(highestBid != null ? highestBid.Amount.ToString("C") : "None")} - Auction active: {IsActive}";
         }
+        
+        public IEnumerable<Bid> GetBidsDescending()
+        {
+            return _bids.OrderByDescending(b => b.Amount);
+        }
     }
 }
 
