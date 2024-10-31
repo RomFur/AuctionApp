@@ -11,6 +11,7 @@ namespace ProjectApp.Core.Interfaces
         List<Auction> GetAllByUserName(string userName);
         void CreateAuction(string itemName, string description, double startingPrice, DateTime endDate, string userName);
         void UpdateAuction(Auction auction);
+        void PlaceBid(int auctionId, double amount, string userName);
         void CloseAuction(int auctionId);
     }
 }

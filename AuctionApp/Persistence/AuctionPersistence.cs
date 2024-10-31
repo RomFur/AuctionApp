@@ -7,12 +7,12 @@ using ProjectApp.Core.Interfaces;
 
 namespace AuctionApp.Persistence;
 
-public class MySqlAuctionPersistence : IAuctionPersistence
+public class AuctionPersistence : IAuctionPersistence
 {
     private readonly AuctionDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public MySqlAuctionPersistence(AuctionDbContext dbContext, IMapper mapper)
+    public AuctionPersistence(AuctionDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
@@ -30,6 +30,28 @@ public class MySqlAuctionPersistence : IAuctionPersistence
         _dbContext.SaveChanges();
     }
 
+    public void SaveBid(int auctionId, Bid bid)
+    {
+        // Map the Bid domain model to the BidDb entity
+        BidDb bidDb = _mapper.Map<BidDb>(bid);
+
+        // Set the AuctionId on the BidDb to ensure it's linked to the correct auction
+        bidDb.AuctionId = auctionId;
+
+        // Ensure DateCreated is only set if it's the minimum value
+        if (bidDb.DateCreated == DateTime.MinValue)
+        {
+            bidDb.DateCreated = DateTime.Now;  // Set to now only if it wasn’t set earlier
+        }
+
+        // Add the bid to the DbContext
+        _dbContext.BidDbs.Add(bidDb);
+
+        // Commit the changes to the database
+        _dbContext.SaveChanges();
+    }
+
+    
     public void UpdateAuction(Auction auction)
     {
         // Retrieve the auction entity from the database
@@ -52,35 +74,49 @@ public class MySqlAuctionPersistence : IAuctionPersistence
 
     public Auction GetById(int id, string username)
     {
-        AuctionDb auctionDb = _dbContext.AuctionDbs
-            .Where(a => a.Id == id && a.UserName.Equals(username))
-            .Include(a => a.BidDbs)
-            .FirstOrDefault(); // null if not found!
-        
-        if (auctionDb == null) throw new DataException("Auction not found");
-        
-        Auction auction = _mapper.Map<Auction>(auctionDb);
-        foreach (BidDb bidDb in auctionDb.BidDbs)
-        {
-            Bid bid = _mapper.Map<Bid>(bidDb);
-            auction.PlaceBid(bid);
-        }
-        return auction;
+        // Use AsNoTracking to avoid Entity Framework tracking changes in retrieved entities
+    AuctionDb auctionDb = _dbContext.AuctionDbs
+        .Where(a => a.Id == id)
+        .Include(a => a.BidDbs)
+        .AsNoTracking()  // Disable tracking for read-only data
+        .FirstOrDefault();
+
+    if (auctionDb == null) throw new DataException("Auction not found");
+
+    Auction auction = _mapper.Map<Auction>(auctionDb);
+    foreach (BidDb bidDb in auctionDb.BidDbs)
+    {
+        Bid bid = _mapper.Map<Bid>(bidDb);
+        auction.PlaceBid(bid);
+    }
+    return auction;
     }
 
     public Auction GetById(int id)
     {
+        // Retrieve auction and bids with AsNoTracking for read-only operation
         AuctionDb auctionDb = _dbContext.AuctionDbs
             .Where(a => a.Id == id)
             .Include(a => a.BidDbs)
-            .FirstOrDefault(); // null if not found!
-        
+            .AsNoTracking()  
+            .FirstOrDefault();
+
         if (auctionDb == null) throw new DataException("Auction not found");
-        
+
+        // Map AuctionDb to Auction
         Auction auction = _mapper.Map<Auction>(auctionDb);
+
+        // Explicitly map BidDb to Bid and prevent resetting TimePlaced
         foreach (BidDb bidDb in auctionDb.BidDbs)
         {
-            Bid bid = _mapper.Map<Bid>(bidDb);
+            // Map BidDb to Bid, and ensure that TimePlaced reflects DateCreated accurately
+            Bid bid = new Bid(
+                id: bidDb.Id,
+                bidderId: bidDb.BidderId,
+                amount: bidDb.Amount,
+                timePlaced: bidDb.DateCreated  // Set TimePlaced to DateCreated on the first mapping
+            );
+
             auction.PlaceBid(bid);
         }
         return auction;

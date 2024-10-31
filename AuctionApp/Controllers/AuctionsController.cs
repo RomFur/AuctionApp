@@ -93,6 +93,77 @@ namespace AuctionApp.Controllers
         }
         
         
+        // GET : AuctionsController/CreateBid
+        public ActionResult CreateBid(int id)
+        {
+            // Fetch the auction by ID
+            Auction auction = _auctionService.GetById(id, User.Identity.Name);
+
+            if (auction == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the auction is active
+            if (!auction.IsActive)
+            {
+                ModelState.AddModelError(string.Empty, "This auction has expired.");
+                return View(new CreateBidVm { AuctionId = id });
+            }
+
+            // Populate StartingBid with the current bid or starting price
+            var model = new CreateBidVm
+            {
+                AuctionId = id,
+                StartingBid = Math.Max(auction.StartingPrice, auction.GetHighestBid()?.Amount ?? auction.StartingPrice)
+            };
+
+            return View(model);
+        }
+        
+        // POST : AuctionsController/CreateBid
+        [HttpPost]
+        public ActionResult CreateBid(int id, CreateBidVm createBidVm)
+        {
+            try
+            {
+                // Fetch the auction again to check its status
+                Auction auction = _auctionService.GetById(id);
+
+                if (auction == null)
+                {
+                    return NotFound(); // Return 404 if auction is not found
+                }
+
+                // Check if the auction is still active
+                if (!auction.IsActive)
+                {
+                    ModelState.AddModelError(string.Empty, "This auction has expired.");
+                    return View(createBidVm); // Return the view with the error message
+                }
+
+                if (ModelState.IsValid)
+                {
+                    double amount = createBidVm.Amount;
+                    string userName = User.Identity.Name;
+
+                    // Place the bid if all checks are valid
+                    _auctionService.PlaceBid(id, amount, userName);
+                    return RedirectToAction("Active");
+                }
+
+                return View(createBidVm);
+            }
+            catch (DataException e)
+            {
+                // Log the exception if necessary
+                ModelState.AddModelError(string.Empty, "An error occurred while placing the bid. Please try again.");
+                return View(createBidVm);
+            }
+        }
+
+        
+        
         // GET : AuctionsController/Edit/{id}
         [HttpGet]
         public ActionResult Edit(int id)

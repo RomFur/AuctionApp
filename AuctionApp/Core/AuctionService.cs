@@ -54,6 +54,35 @@ public class AuctionService : IAuctionService
         Auction auction = new Auction(itemName, description, startingPrice, endDate, userName);
         _auctionPersistence.SaveAuction(auction);
     }
+    
+    public void PlaceBid(int auctionId, double bidAmount, string bidderId)
+    {
+        Auction auction = _auctionPersistence.GetById(auctionId);
+
+        // Check if auction exists
+        if (auction == null)
+        {
+            throw new DataException("Auction not found.");
+        }
+
+        // Check if bidder is the owner
+        if (auction.UserName == bidderId)
+        {
+            throw new InvalidOperationException("You cannot place a bid on your own auction.");
+        }
+
+        // Check if the bid is greater than the highest bid or starting price
+        double minBidAmount = Math.Max(auction.StartingPrice, auction.GetHighestBid()?.Amount ?? 0);
+        if (bidAmount <= minBidAmount)
+        {
+            throw new InvalidOperationException($"Bid amount must be greater than {minBidAmount}.");
+        }
+
+        // Place the bid if all checks pass
+        var bid = new Bid(bidderId, bidAmount);
+        auction.PlaceBid(bid);
+        _auctionPersistence.SaveBid(auctionId, bid);
+    }
 
     public void UpdateAuction(Auction auction)
     {
@@ -69,7 +98,7 @@ public class AuctionService : IAuctionService
         // After validation, update the auction in the persistence layer
         _auctionPersistence.UpdateAuction(auction);  // Assuming this is a method in your persistence layer
     }
-
+    
     public List<Auction> GetAllByUserName(string userName)
     {
         List<Auction> auctions = _auctionPersistence.GetAllByUserName(userName);

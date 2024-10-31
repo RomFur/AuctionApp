@@ -35,6 +35,11 @@ public class MockAuctionService : IAuctionService
         throw new NotImplementedException();
     }
 
+    public void PlaceBid(int auctionId, double amount, string userName)
+    {
+        throw new NotImplementedException();
+    }
+
     public void UpdateAuction(Auction auction)
     {
         throw new NotImplementedException();

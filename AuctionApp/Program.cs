@@ -24,7 +24,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 
 // dependency injection of persistence into service
-builder.Services.AddScoped<IAuctionPersistence, MySqlAuctionPersistence>();
+builder.Services.AddScoped<IAuctionPersistence, AuctionPersistence>();
 
 // auto mapping of data
 builder.Services.AddAutoMapper(typeof(Program));
