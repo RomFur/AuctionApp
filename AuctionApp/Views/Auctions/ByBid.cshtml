@@ -1,0 +1,58 @@
+@model IEnumerable<AuctionApp.Models.Auctions.AuctionVm>
+
+@{
+    ViewData["Title"] = "Active auctions";
+}
+
+<h1>Auctions with your bids</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Name  <!-- Custom display name -->
+        </th>
+        <th>
+            Description  <!-- Custom display name -->
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate) <!-- Keep default for EndDate -->
+        </th>
+        <th>
+            Auctioneer  <!-- Custom display name -->
+        </th>
+        <th>
+            Active  <!-- Custom display name -->
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemName)  <!-- Data for Name -->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemDescription)  <!-- Data for Description -->
+            </td>
+            <td>
+                @item.EndDate.ToString("yyyy-MM-dd HH:mm")  <!-- Formatted EndDate -->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuctioneerId)  <!-- Data for Auctioneer -->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)  <!-- Data for Active -->
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new {  id=item.Id })
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

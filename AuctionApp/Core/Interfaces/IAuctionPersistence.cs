@@ -12,6 +12,8 @@ namespace ProjectApp.Core.Interfaces
         Auction GetById(int id);
         void SaveAuction(Auction auction);
         void SaveBid(int auctionId, Bid bid);
+        List<Auction> GetByUserBid(string userName);
+        List<Auction> GetAuctionsWon(string userName);
         void UpdateAuction(Auction auction);
         void DeleteAuction(int id);
     }

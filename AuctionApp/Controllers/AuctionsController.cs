@@ -20,7 +20,7 @@ namespace AuctionApp.Controllers
         // GET: AuctionsController
         public ActionResult Index()
         {
-            List<Auction> auctions = _auctionService.GetAllByUserName(User.Identity.Name);  // Get all active auctions
+            List<Auction> auctions = _auctionService.GetAllByUserName(User.Identity.Name); 
             List<AuctionVm> auctionsVms = new List<AuctionVm>();
             foreach (var auction in auctions)
             {
@@ -46,6 +46,33 @@ namespace AuctionApp.Controllers
             return View(activeAuctionVms);
         }
 
+        public ActionResult ByBid()
+        {
+            List<Auction> auctionsWithBid = _auctionService.GetByUserBid(User.Identity.Name);
+
+            // Map the Auction domain models to AuctionVm view models
+            List<AuctionVm> activeAuctionVms = new List<AuctionVm>();
+            foreach (var auction in auctionsWithBid)
+            {
+                activeAuctionVms.Add(AuctionVm.FromAuction(auction));
+            }
+
+            // Pass the list of active AuctionVm to the view
+            return View(activeAuctionVms);
+        }
+
+        public ActionResult AuctionsWon()
+        {
+            List<Auction> auctionsWon = _auctionService.GetAuctionsWon(User.Identity.Name);
+            
+            List<AuctionVm> auctionsVms = new List<AuctionVm>();
+            foreach (var auction in auctionsWon)
+            {
+                auctionsVms.Add(AuctionVm.FromAuction(auction));
+            }
+            
+            return View(auctionsVms);
+        }
 
         // GET : AuctionsController/Details
         public ActionResult Details(int id)
@@ -97,7 +124,7 @@ namespace AuctionApp.Controllers
         public ActionResult CreateBid(int id)
         {
             // Fetch the auction by ID
-            Auction auction = _auctionService.GetById(id, User.Identity.Name);
+            Auction auction = _auctionService.GetById(id);
 
             if (auction == null)
             {
@@ -115,7 +142,7 @@ namespace AuctionApp.Controllers
             var model = new CreateBidVm
             {
                 AuctionId = id,
-                StartingBid = Math.Max(auction.StartingPrice, auction.GetHighestBid()?.Amount ?? auction.StartingPrice)
+                StartingBid = Math.Max(auction.StartingPrice, auction.GetHighestBid()?.Amount ?? auction.StartingPrice) + 1
             };
 
             return View(model);

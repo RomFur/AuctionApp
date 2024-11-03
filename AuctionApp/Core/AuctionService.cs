@@ -32,6 +32,18 @@ public class AuctionService : IAuctionService
         return auctions;
     }
 
+    public List<Auction> GetByUserBid(string userName)
+    {
+        List<Auction> auctions = _auctionPersistence.GetByUserBid(userName);
+        return auctions;
+    }
+
+    public List<Auction> GetAuctionsWon(string userName)
+    {
+        List<Auction> auctions = _auctionPersistence.GetAuctionsWon(userName);
+        return auctions;
+    }
+
     public List<Auction> GetAllInactiveAuctions()
     {
         throw new NotImplementedException();
