@@ -78,11 +78,34 @@ namespace AuctionApp.Controllers
         public ActionResult Details(int id)
         {
 
-            Auction auction = _auctionService.GetById(id); // current user
+          /*  Auction auction = _auctionService.GetById(id); // current user
                 if (auction == null) return BadRequest("Might be null"); // HTTP 400
 
                 AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction);
-                return View(detailsVm);
+                return View(detailsVm); */
+          
+          var auction = _auctionService.GetById(id);
+    
+          if (auction == null)
+          {
+              return NotFound();
+          }
+
+          var viewModel = new AuctionDetailsVm
+          {
+              Id = auction.Id,
+              ItemName = auction.ItemName,
+              ItemDescription = auction.Description,
+              IsActive = auction.IsActive,
+              StartDate = auction.StartDate,
+              //EndDate = auction.EndDate,
+              BidVms = auction.Bids
+                  .OrderByDescending(b => b.Amount)  
+                  .Select(bid => BidVm.FromBid(bid))
+                  .ToList()
+          };
+
+          return View(viewModel);
             
            
         }
