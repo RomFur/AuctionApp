@@ -87,7 +87,7 @@ public class AuctionPersistence : IAuctionPersistence
     foreach (BidDb bidDb in auctionDb.BidDbs)
     {
         Bid bid = _mapper.Map<Bid>(bidDb);
-        auction.PlaceBid(bid);
+        auction.AddBid(bid);
     }
     return auction;
     }
@@ -117,7 +117,7 @@ public class AuctionPersistence : IAuctionPersistence
                 timePlaced: bidDb.DateCreated  // Set TimePlaced to DateCreated on the first mapping
             );
 
-            auction.PlaceBid(bid);
+            auction.AddBid(bid);
         }
         return auction;
     }
@@ -157,6 +157,14 @@ public class AuctionPersistence : IAuctionPersistence
         foreach (var auctionDb in wonAuctionDbs)
         {
             var auction = _mapper.Map<Auction>(auctionDb);
+        
+            // Map bids for each auction
+            foreach (var bidDb in auctionDb.BidDbs)
+            {
+                var bid = _mapper.Map<Bid>(bidDb);
+                auction.AddBid(bid);
+            }
+
             wonAuctions.Add(auction);
         }
 

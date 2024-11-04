@@ -43,17 +43,24 @@
         {
             if (!IsActive)
                 throw new InvalidOperationException("Auction is closed.");
-            if (_bids.Count > 0 && newBid.Amount <= _bids.Max(b => b.Amount))
-                throw new InvalidOperationException("Bid must be higher than the current highest bid.");
-            if (newBid.Amount <= StartingPrice)
-                throw new InvalidOperationException("Bid must be higher than the starting price.");
-           
+    
+            double minimumBid = _bids.Any()
+                ? _bids.Max(b => b.Amount) + 1 // If bids exist, set minimum bid to highest bid + 1
+                : StartingPrice;                // Otherwise, set minimum bid to the starting price
+    
+            if (newBid.Amount < minimumBid)
+                throw new InvalidOperationException($"Bid must be at least {minimumBid}.");
 
             _bids.Add(newBid);
         }
 
+        public void AddBid(Bid bid)
+        {
+            _bids.Add(bid);
+        }
+
         //GET: Highest Bid (Bid?)
-        public Bid? GetHighestBid()
+        public Bid GetHighestBid()
         {
             return _bids.OrderByDescending(b => b.Amount).FirstOrDefault();
         } 

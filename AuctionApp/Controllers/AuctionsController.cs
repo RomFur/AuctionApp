@@ -138,11 +138,13 @@ namespace AuctionApp.Controllers
                 return View(new CreateBidVm { AuctionId = id });
             }
 
-            // Populate StartingBid with the current bid or starting price
+            // Populate StartingBid with either the starting price or highest bid + 1
             var model = new CreateBidVm
             {
                 AuctionId = id,
-                StartingBid = Math.Max(auction.StartingPrice, auction.GetHighestBid()?.Amount ?? auction.StartingPrice) + 1
+                StartingBid = auction.Bids.Any()
+                    ? auction.GetHighestBid().Amount + 1  // If bids exist, use highest bid + 1
+                    : auction.StartingPrice                // Otherwise, use the starting price
             };
 
             return View(model);

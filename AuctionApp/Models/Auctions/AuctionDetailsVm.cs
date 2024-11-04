@@ -11,6 +11,10 @@ public class AuctionDetailsVm
     public string ItemName { get; set; }
 
     public string ItemDescription { get; set; }
+    
+    public double StartingPrice { get; set; }
+    
+    public double CurrentBid { get; set; }
 
     [Display(Name = "Active")]
     public bool IsActive { get; set; }
@@ -32,6 +36,8 @@ public class AuctionDetailsVm
             Id = auction.Id,
             ItemName = auction.ItemName,
             ItemDescription = auction.Description,
+            StartingPrice = auction.StartingPrice,
+            CurrentBid = auction.GetHighestBid()?.Amount ?? 0, 
             IsActive = auction.IsActive,
             StartDate = auction.StartDate,
             EndDate = auction.EndDate ?? DateTime.MinValue,

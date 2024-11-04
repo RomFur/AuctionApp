@@ -83,11 +83,15 @@ public class AuctionService : IAuctionService
             throw new InvalidOperationException("You cannot place a bid on your own auction.");
         }
 
-        // Check if the bid is greater than the highest bid or starting price
-        double minBidAmount = Math.Max(auction.StartingPrice, auction.GetHighestBid()?.Amount ?? 0);
-        if (bidAmount <= minBidAmount)
+        // Determine the minimum acceptable bid amount
+        double minBidAmount = auction.Bids.Any() 
+            ? auction.GetHighestBid().Amount + 1   // If bids exist, minimum bid is highest bid + 1
+            : auction.StartingPrice;               // Otherwise, minimum bid is the starting price
+
+        // Check if the bid meets the minimum bid requirement
+        if (bidAmount < minBidAmount)
         {
-            throw new InvalidOperationException($"Bid amount must be greater than {minBidAmount}.");
+            throw new InvalidOperationException($"Bid amount must be at least {minBidAmount}.");
         }
 
         // Place the bid if all checks pass
@@ -95,6 +99,7 @@ public class AuctionService : IAuctionService
         auction.PlaceBid(bid);
         _auctionPersistence.SaveBid(auctionId, bid);
     }
+
 
     public void UpdateAuction(Auction auction)
     {
