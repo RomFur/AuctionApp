@@ -96,6 +96,7 @@ namespace AuctionApp.Controllers
               Id = auction.Id,
               ItemName = auction.ItemName,
               ItemDescription = auction.Description,
+              Auctioneer = auction.UserName,
               StartingPrice = auction.StartingPrice,
               IsActive = auction.IsActive,
               StartDate = auction.StartDate,

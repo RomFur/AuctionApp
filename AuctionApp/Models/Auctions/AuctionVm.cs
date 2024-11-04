@@ -12,8 +12,8 @@ public class AuctionVm
     
     public string ItemDescription { get; set; }
     
-    [Display(Name = "Created Date")]
-    [DisplayFormat(DataFormatString = "{0:yyyy_mm_dd HH:mm}")]
+    [Display(Name = "Ends on")]
+    [DisplayFormat(DataFormatString = "{0:yyyy-mm-dd HH:mm}")]
     public DateTime EndDate { get; set; }
    
     public string AuctioneerId { get; set; }
