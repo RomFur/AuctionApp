@@ -27,7 +27,7 @@ public class AuctionVm
             Id = auction.Id,
             ItemName = auction.ItemName,
             ItemDescription = auction.Description,
-            EndDate = auction.EndDate ?? DateTime.MinValue,  // Use a default date if EndDate is null
+            EndDate = auction.EndDate,  // Use a default date if EndDate is null
             AuctioneerId = auction.UserName,
             IsActive = auction.IsActive,
         };

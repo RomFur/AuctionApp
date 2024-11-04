@@ -96,9 +96,10 @@ namespace AuctionApp.Controllers
               Id = auction.Id,
               ItemName = auction.ItemName,
               ItemDescription = auction.Description,
+              StartingPrice = auction.StartingPrice,
               IsActive = auction.IsActive,
               StartDate = auction.StartDate,
-              //EndDate = auction.EndDate,
+              EndDate = auction.EndDate,
               BidVms = auction.Bids
                   .OrderByDescending(b => b.Amount)  
                   .Select(bid => BidVm.FromBid(bid))

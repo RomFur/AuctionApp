@@ -9,7 +9,7 @@
         public double StartingPrice { get; set; }  
         public string UserName { get; set; }  // User who is auctioning the item.
         public DateTime StartDate { get; set; }  //behövs?
-        public DateTime? EndDate { get; private set; }  
+        public DateTime EndDate { get; private set; }  
 
         private List<Bid> _bids = new List<Bid>();  
         public IEnumerable<Bid> Bids => _bids.AsReadOnly();  // Read-Only
@@ -26,7 +26,7 @@
             UserName = userName;
         }
 
-        public Auction(int id, string itemName, string description, double startingPrice, DateTime startDate, DateTime? endDate, string userName)
+        public Auction(int id, string itemName, string description, double startingPrice, DateTime startDate, DateTime endDate, string userName)
         {
             Id = id;
             ItemName = itemName;

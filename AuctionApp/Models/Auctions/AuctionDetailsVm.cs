@@ -42,7 +42,7 @@ public class AuctionDetailsVm
             CurrentBid = auction.GetHighestBid()?.Amount ?? 0, 
             IsActive = auction.IsActive,
             StartDate = auction.StartDate,
-            EndDate = auction.EndDate ?? DateTime.MinValue,
+            EndDate = auction.EndDate,
         };
         foreach (var bid in auction.Bids)
         {
