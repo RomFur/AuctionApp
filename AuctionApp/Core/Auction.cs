@@ -6,8 +6,8 @@
         public string ItemName { get; set; }  
         public string Description { get; set; }  
         public double StartingPrice { get; set; }  
-        public string UserName { get; set; }  // User who is auctioning the item.
-        public DateTime StartDate { get; set; }  //behövs?
+        public string UserName { get; set; } 
+        public DateTime StartDate { get; set; } 
         public DateTime EndDate { get; private set; }
         private List<Bid> _bids = new List<Bid>();  
         public IEnumerable<Bid> Bids => _bids.AsReadOnly();  // Read-Only
@@ -62,11 +62,6 @@
             return _bids.OrderByDescending(b => b.Amount).FirstOrDefault();
         } 
         
-        public void CloseAuction()
-        {
-            EndDate = DateTime.Now;
-        }
-
         public override string ToString()
         {
             var highestBid = GetHighestBid();
