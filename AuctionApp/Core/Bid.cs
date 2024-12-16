@@ -26,9 +26,7 @@ namespace AuctionApp.Core
             _timePlaced = timePlaced;
         }
 
-        public Bid()
-        {
-        }
+        public Bid() {}
 
         public override string ToString()
         {

@@ -26,38 +26,30 @@ namespace AuctionApp.Controllers
             {
                 auctionsVms.Add(AuctionVm.FromAuction(auction));
             }
-            return View(auctionsVms);  // Pass the list of AuctionVm to the view
+            return View(auctionsVms);  
         }
         
         // GET: AuctionsController/Active
         public ActionResult Active()
         {
-            // Get all active auctions from the auction service
             List<Auction> activeAuctions = _auctionService.GetAllActiveAuctions();
-    
-            // Map the Auction domain models to AuctionVm view models
+            
             List<AuctionVm> activeAuctionVms = new List<AuctionVm>();
             foreach (var auction in activeAuctions)
             {
                 activeAuctionVms.Add(AuctionVm.FromAuction(auction));
             }
-
-            // Pass the list of active AuctionVm to the view
             return View(activeAuctionVms);
         }
 
         public ActionResult ByBid()
         {
             List<Auction> auctionsWithBid = _auctionService.GetByUserBid(User.Identity.Name);
-
-            // Map the Auction domain models to AuctionVm view models
             List<AuctionVm> activeAuctionVms = new List<AuctionVm>();
             foreach (var auction in auctionsWithBid)
             {
                 activeAuctionVms.Add(AuctionVm.FromAuction(auction));
             }
-
-            // Pass the list of active AuctionVm to the view
             return View(activeAuctionVms);
         }
 
@@ -77,13 +69,6 @@ namespace AuctionApp.Controllers
         // GET : AuctionsController/Details
         public ActionResult Details(int id)
         {
-
-          /*  Auction auction = _auctionService.GetById(id); // current user
-                if (auction == null) return BadRequest("Might be null"); // HTTP 400
-
-                AuctionDetailsVm detailsVm = AuctionDetailsVm.FromAuction(auction);
-                return View(detailsVm); */
-          
           var auction = _auctionService.GetById(id);
     
           if (auction == null)
@@ -148,15 +133,12 @@ namespace AuctionApp.Controllers
         // GET : AuctionsController/CreateBid
         public ActionResult CreateBid(int id)
         {
-            // Fetch the auction by ID
             Auction auction = _auctionService.GetById(id);
 
             if (auction == null)
             {
                 return NotFound();
             }
-
-            // Check if the auction is active
             if (!auction.IsActive)
             {
                 ModelState.AddModelError(string.Empty, "This auction has expired.");
@@ -168,8 +150,8 @@ namespace AuctionApp.Controllers
             {
                 AuctionId = id,
                 StartingBid = auction.Bids.Any()
-                    ? auction.GetHighestBid().Amount + 1  // If bids exist, use highest bid + 1
-                    : auction.StartingPrice                // Otherwise, use the starting price
+                    ? auction.GetHighestBid().Amount + 1  
+                    : auction.StartingPrice               
             };
 
             return View(model);
@@ -181,15 +163,13 @@ namespace AuctionApp.Controllers
         {
             try
             {
-                // Fetch the auction again to check its status
                 Auction auction = _auctionService.GetById(id);
 
                 if (auction == null)
                 {
-                    return NotFound(); // Return 404 if auction is not found
+                    return NotFound(); 
                 }
-
-                // Check if the auction is still active
+                
                 if (!auction.IsActive)
                 {
                     ModelState.AddModelError(string.Empty, "This auction has expired.");
@@ -210,7 +190,6 @@ namespace AuctionApp.Controllers
             }
             catch (DataException e)
             {
-                // Log the exception if necessary
                 ModelState.AddModelError(string.Empty, "An error occurred while placing the bid. Please try again.");
                 return View(createBidVm);
             }

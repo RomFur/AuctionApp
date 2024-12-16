@@ -43,17 +43,7 @@ public class AuctionService : IAuctionService
         List<Auction> auctions = _auctionPersistence.GetAuctionsWon(userName);
         return auctions;
     }
-
-    public List<Auction> GetAllInactiveAuctions()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void CloseAuction(int auctionId)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public void CreateAuction(string itemName, string description, double startingPrice, DateTime endDate, string userName)
     {
         if (itemName == null) throw new DataException("Item name");
@@ -70,8 +60,7 @@ public class AuctionService : IAuctionService
     public void PlaceBid(int auctionId, double bidAmount, string bidderId)
     {
         Auction auction = _auctionPersistence.GetById(auctionId);
-
-        // Check if auction exists
+        
         if (auction == null)
         {
             throw new DataException("Auction not found.");
@@ -82,19 +71,16 @@ public class AuctionService : IAuctionService
         {
             throw new InvalidOperationException("You cannot place a bid on your own auction.");
         }
-
-        // Determine the minimum acceptable bid amount
+        
         double minBidAmount = auction.Bids.Any() 
             ? auction.GetHighestBid().Amount + 1   // If bids exist, minimum bid is highest bid + 1
             : auction.StartingPrice;               // Otherwise, minimum bid is the starting price
-
-        // Check if the bid meets the minimum bid requirement
+        
         if (bidAmount < minBidAmount)
         {
             throw new InvalidOperationException($"Bid amount must be at least {minBidAmount}.");
         }
-
-        // Place the bid if all checks pass
+        
         var bid = new Bid(bidderId, bidAmount);
         auction.PlaceBid(bid);
         _auctionPersistence.SaveBid(auctionId, bid);
@@ -104,16 +90,11 @@ public class AuctionService : IAuctionService
     public void UpdateAuction(Auction auction)
     {
         if (auction == null) throw new DataException("Auction cannot be null");
-    
-        // Validate the auction's description (assuming you're allowing editing of only the description)
+        
         if (auction.Description == null || auction.Description.Length > 512)
             throw new DataException("Invalid description. It cannot be null or exceed 512 characters");
-
-        // Optional: You could validate other fields depending on which ones are being updated
-        // e.g., if you're updating the end date or other properties, add validation here.
-
-        // After validation, update the auction in the persistence layer
-        _auctionPersistence.UpdateAuction(auction);  // Assuming this is a method in your persistence layer
+        
+        _auctionPersistence.UpdateAuction(auction);  
     }
     
     public List<Auction> GetAllByUserName(string userName)

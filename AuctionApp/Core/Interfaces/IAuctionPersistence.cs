@@ -15,6 +15,5 @@ namespace ProjectApp.Core.Interfaces
         List<Auction> GetByUserBid(string userName);
         List<Auction> GetAuctionsWon(string userName);
         void UpdateAuction(Auction auction);
-        void DeleteAuction(int id);
     }
 }

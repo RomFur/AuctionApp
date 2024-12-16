@@ -2,7 +2,6 @@
 
 namespace ProjectApp.Core.Interfaces
 {
-    //Kan behöva Bidservice och IBidService...
     public interface IAuctionService
     {
         List<Auction> GetAllActiveAuctions();
@@ -14,6 +13,5 @@ namespace ProjectApp.Core.Interfaces
         void CreateAuction(string itemName, string description, double startingPrice, DateTime endDate, string userName);
         void UpdateAuction(Auction auction);
         void PlaceBid(int auctionId, double amount, string userName);
-        void CloseAuction(int auctionId);
     }
 }

@@ -18,15 +18,13 @@ builder.Services.AddDefaultIdentity<AppIdentityUser>(
 builder.Services.AddDbContext<AuctionDbContext>(
     options => options.UseMySQL(builder.Configuration.GetConnectionString("AuctionDbConnection")));
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 
-// dependency injection of persistence into service
 builder.Services.AddScoped<IAuctionPersistence, AuctionPersistence>();
 
-// auto mapping of data
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();

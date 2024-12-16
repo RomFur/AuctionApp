@@ -17,12 +17,7 @@ public class AuctionPersistence : IAuctionPersistence
         _dbContext = dbContext;
         _mapper = mapper;
     }
-
-    public void DeleteAuction(int id)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public void SaveAuction(Auction auction)
     {
         AuctionDb adb = _mapper.Map<AuctionDb>(auction);
@@ -32,53 +27,42 @@ public class AuctionPersistence : IAuctionPersistence
 
     public void SaveBid(int auctionId, Bid bid)
     {
-        // Map the Bid domain model to the BidDb entity
         BidDb bidDb = _mapper.Map<BidDb>(bid);
-
-        // Set the AuctionId on the BidDb to ensure it's linked to the correct auction
+        
         bidDb.AuctionId = auctionId;
-
-        // Ensure DateCreated is only set if it's the minimum value
+        
         if (bidDb.DateCreated == DateTime.MinValue)
         {
-            bidDb.DateCreated = DateTime.Now;  // Set to now only if it wasn’t set earlier
+            bidDb.DateCreated = DateTime.Now;  
         }
-
-        // Add the bid to the DbContext
+        
         _dbContext.BidDbs.Add(bidDb);
-
-        // Commit the changes to the database
         _dbContext.SaveChanges();
     }
 
     
     public void UpdateAuction(Auction auction)
     {
-        // Retrieve the auction entity from the database
         AuctionDb auctionDb = _dbContext.AuctionDbs
             .FirstOrDefault(a => a.Id == auction.Id && a.UserName == auction.UserName);
-    
-        // Check if auction exists
+        
         if (auctionDb == null)
         {
             throw new DataException("Auction not found.");
         }
-    
-        // Update the description (assuming only description is allowed to be updated)
+        
         auctionDb.Description = auction.Description;
-
-        // Save changes back to the database
+        
         _dbContext.AuctionDbs.Update(auctionDb);
         _dbContext.SaveChanges();
     }
 
     public Auction GetById(int id, string userName)
     {
-        // Use AsNoTracking to avoid Entity Framework tracking changes in retrieved entities
     AuctionDb auctionDb = _dbContext.AuctionDbs
-        .Where(a => a.Id == id && a.UserName == userName) // Ensure auction belongs to the specified user
+        .Where(a => a.Id == id && a.UserName == userName) 
         .Include(a => a.BidDbs)
-        .AsNoTracking()  // Disable tracking for read-only data
+        .AsNoTracking()  
         .FirstOrDefault();
 
     if (auctionDb == null) throw new DataException("Auction not found");
@@ -94,7 +78,6 @@ public class AuctionPersistence : IAuctionPersistence
 
     public Auction GetById(int id)
     {
-        // Retrieve auction and bids with AsNoTracking for read-only operation
         AuctionDb auctionDb = _dbContext.AuctionDbs
             .Where(a => a.Id == id)
             .Include(a => a.BidDbs)
@@ -102,19 +85,16 @@ public class AuctionPersistence : IAuctionPersistence
             .FirstOrDefault();
 
         if (auctionDb == null) throw new DataException("Auction not found");
-
-        // Map AuctionDb to Auction
+        
         Auction auction = _mapper.Map<Auction>(auctionDb);
-
-        // Explicitly map BidDb to Bid and prevent resetting TimePlaced
+        
         foreach (BidDb bidDb in auctionDb.BidDbs)
         {
-            // Map BidDb to Bid, and ensure that TimePlaced reflects DateCreated accurately
             Bid bid = new Bid(
                 id: bidDb.Id,
                 bidderId: bidDb.BidderId,
                 amount: bidDb.Amount,
-                timePlaced: bidDb.DateCreated  // Set TimePlaced to DateCreated on the first mapping
+                timePlaced: bidDb.DateCreated 
             );
 
             auction.AddBid(bid);
@@ -124,13 +104,11 @@ public class AuctionPersistence : IAuctionPersistence
 
     public List<Auction> GetAllActiveAuctions()
     {
-        // Fetch auctions with EndDate in the future, sorted by EndDate
         var activeAuctionDbs = _dbContext.AuctionDbs
-            .Where(a => a.EndDate > DateTime.Now)  // Filter for future auctions
-            .OrderBy(a => a.EndDate)               // Sort by EndDate
+            .Where(a => a.EndDate > DateTime.Now)  
+            .OrderBy(a => a.EndDate)          
             .ToList();
-    
-        // Map to domain model
+        
         List<Auction> activeAuctions = new List<Auction>();
         foreach (var auctionDb in activeAuctionDbs)
         {
@@ -143,22 +121,19 @@ public class AuctionPersistence : IAuctionPersistence
 
     public List<Auction> GetAuctionsWon(string userName)
     {
-        // Fetch expired auctions where the highest bid belongs to the specified user
         var wonAuctionDbs = _dbContext.AuctionDbs
-            .Where(a => a.EndDate <= DateTime.Now) // Only expired auctions
-            .Include(a => a.BidDbs)               // Include bids
+            .Where(a => a.EndDate <= DateTime.Now) 
+            .Include(a => a.BidDbs)              
             .Where(a => a.BidDbs.Any())           // Ensure there is at least one bid
             .ToList()
-            .Where(a => a.BidDbs.OrderByDescending(b => b.Amount).First().BidderId == userName) // Highest bid belongs to user
+            .Where(a => a.BidDbs.OrderByDescending(b => b.Amount).First().BidderId == userName) 
             .ToList();
-
-        // Map the results to the domain model
+        
         List<Auction> wonAuctions = new List<Auction>();
         foreach (var auctionDb in wonAuctionDbs)
         {
             var auction = _mapper.Map<Auction>(auctionDb);
-        
-            // Map bids for each auction
+            
             foreach (var bidDb in auctionDb.BidDbs)
             {
                 var bid = _mapper.Map<Bid>(bidDb);
@@ -189,19 +164,16 @@ public class AuctionPersistence : IAuctionPersistence
 
     public List<Auction> GetByUserBid(string userName)
     {
-        // Fetch active auctions that have at least one bid by the given username
         var activeAuctionDbs = _dbContext.AuctionDbs
-            .Where(a => a.EndDate > DateTime.Now) // Active auctions (EndDate in the future)
-            .Include(a => a.BidDbs) // Include bids
-            .Where(a => a.BidDbs.Any(b => b.BidderId == userName)) // Filter by BidderId
+            .Where(a => a.EndDate > DateTime.Now) 
+            .Include(a => a.BidDbs) 
+            .Where(a => a.BidDbs.Any(b => b.BidderId == userName))
             .ToList();
-
-        // Map the results to the domain model
+        
         List<Auction> auctions = activeAuctionDbs.Select(auctionDb =>
         {
             var auction = _mapper.Map<Auction>(auctionDb);
-        
-            // Map the bids to the domain model for each auction
+            
             foreach (var bidDb in auctionDb.BidDbs.Where(b => b.BidderId == userName))
             {
                 var bid = _mapper.Map<Bid>(bidDb);

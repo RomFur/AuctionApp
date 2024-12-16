@@ -9,7 +9,6 @@ public class CreateBidVm
     public double Amount { get; set; }
     
     public int AuctionId { get; set; }
-
-    // New property to hold the pre-filled bid amount
+    
     public double StartingBid { get; set; }
 }
